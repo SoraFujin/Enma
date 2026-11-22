@@ -29,6 +29,29 @@ void UART_print(const char *str)
     }
 }
 
+void UART_print_big_number(uint16_t number)
+{
+    char buffer[6];
+    uint8_t i = 0;
+
+    if (number == 0)
+    {
+        UART_transmit_char('0');
+        return;
+    }
+
+    while (number > 0)
+    {
+        buffer[i++] = '0' + (number % 10);
+        number /= 10;
+    }
+
+    while (i > 0)
+    {
+        UART_transmit_char(buffer[--i]);
+    }
+}
+
 void UART_print_number(uint8_t number)
 {
     if (number >= 100)

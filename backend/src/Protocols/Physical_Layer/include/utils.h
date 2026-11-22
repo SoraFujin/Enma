@@ -18,4 +18,6 @@ void UART_print_number(uint8_t number);
 
 void UART_newline(void);
 
+void UART_print_big_number(uint16_t number);
+
 #endif

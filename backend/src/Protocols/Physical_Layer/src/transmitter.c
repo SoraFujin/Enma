@@ -1,5 +1,4 @@
 #include "../include/transmitter.h"
-#include "../include/gpio.h"
 
 void send_frame(uint16_t byte)
 {
@@ -33,12 +32,4 @@ uint16_t frame(uint8_t byte)
 {
     uint16_t frame = ((uint16_t) byte << 1) | 0x200;
     return frame;
-}
-
-int main(void) 
-{
-    setup_gpio_A();
-    uint8_t data = 18;
-    send_frame(frame(data));
-    return 0;
 }

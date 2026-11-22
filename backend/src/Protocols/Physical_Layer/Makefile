@@ -1,19 +1,22 @@
 
-MCU       := atmega328p
-F_CPU     := 16000000UL
+MCU        := atmega328p
+F_CPU      := 16000000UL
 PROGRAMMER := arduino
-BAUD      := 115200
+BAUD       := 115200
 
-# Change these if your Arduino ports differ.
 RECEIVER_PORT    ?= /dev/ttyACM1
 TRANSMITTER_PORT ?= /dev/ttyACM0
 
-CC       := avr-gcc
-OBJCOPY  := avr-objcopy
-AVRDUDE  := avrdude
+CC      := avr-gcc
+OBJCOPY := avr-objcopy
+AVRDUDE := avrdude
 
-CFLAGS   := -mmcu=$(MCU) -DF_CPU=$(F_CPU) -Os -Wall -Wextra
-OUTPUT   := output
+CFLAGS := -mmcu=$(MCU) -DF_CPU=$(F_CPU) -Os -Wall -Wextra \
+          -Iinclude
+
+OUTPUT := output
+
+COMMON_SRC := src/gpio_setup.c src/utils.c
 
 .PHONY: all help clean receiver transmitter flash-receiver flash-transmitter
 
@@ -23,24 +26,16 @@ help:
 	@echo "Physical Layer - Build and Flash Commands"
 	@echo ""
 	@echo "Build:"
-	@echo "  make                  Build receiver and transmitter"
-	@echo "  make receiver         Build receiver firmware"
-	@echo "  make transmitter      Build transmitter firmware"
+	@echo "  make"
+	@echo "  make receiver"
+	@echo "  make transmitter"
 	@echo ""
 	@echo "Flash:"
-	@echo "  make flash-receiver   Flash receiver Arduino"
-	@echo "  make flash-transmitter Flash transmitter Arduino"
+	@echo "  make flash-receiver"
+	@echo "  make flash-transmitter"
 	@echo ""
-	@echo "Ports:"
-	@echo "  RECEIVER_PORT=$(RECEIVER_PORT)"
-	@echo "  TRANSMITTER_PORT=$(TRANSMITTER_PORT)"
-	@echo ""
-	@echo "Override ports:"
-	@echo "  make flash-receiver RECEIVER_PORT=/dev/ttyACM0"
-	@echo "  make flash-transmitter TRANSMITTER_PORT=/dev/ttyACM1"
-	@echo ""
-	@echo "Other:"
-	@echo "  make clean            Remove generated files"
+	@echo "Clean:"
+	@echo "  make clean"
 
 $(OUTPUT):
 	mkdir -p $(OUTPUT)
@@ -49,11 +44,11 @@ receiver: $(OUTPUT)/receiver.hex
 
 transmitter: $(OUTPUT)/transmitter.hex
 
-$(OUTPUT)/receiver.elf: src/receiver.c | $(OUTPUT)
-	$(CC) $(CFLAGS) $< -o $@
+$(OUTPUT)/receiver.elf: firmware/receiver/main.c src/receiver.c $(COMMON_SRC) | $(OUTPUT)
+	$(CC) $(CFLAGS) $^ -o $@
 
-$(OUTPUT)/transmitter.elf: src/transmitter.c | $(OUTPUT)
-	$(CC) $(CFLAGS) $< -o $@
+$(OUTPUT)/transmitter.elf: firmware/transmitter/main.c src/transmitter.c $(COMMON_SRC) | $(OUTPUT)
+	$(CC) $(CFLAGS) $^ -o $@
 
 $(OUTPUT)/receiver.hex: $(OUTPUT)/receiver.elf
 	$(OBJCOPY) -O ihex -R .eeprom $< $@
