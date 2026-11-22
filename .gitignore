@@ -2,6 +2,16 @@
 # Edit at https://www.toptal.com/developers/gitignore?templates=c,nextjs,react,node
 
 ### C ###
+# Build directories
+/backend/Build/
+/backend/src/Protocols/**/output/
+/backend/src/server/output/
+
+# Physical layer generated binaries
+/backend/src/Protocols/Physical_Layer/output/
+
+# General compiled executables
+
 # Prerequisites
 *.d
 

@@ -3,17 +3,6 @@
 #include <avr/io.h>
 #include <util/delay.h>
 
-// PB5 as output.
-// PB4 as input.
-void setup_gpio()
-{
-    DDRB |= (1 << DDB5);
-
-    DDRB &= ~(1 << DDB4);
-
-    PORTB &= ~(1 << PB4);
-}
-
 void send_frame(uint16_t byte)
 {
     uint16_t current_bit = 0;
@@ -93,7 +82,7 @@ uint8_t receive_frame()
             _delay_ms(5);
             if(!(PINB & (1 << PB4)))
             {
-                _delay_ms(15);
+                _delay_ms(10);
                 return receive_byte();
             }
         }
@@ -108,8 +97,22 @@ void send()
     send_frame(frame_data);
 }
 
+void setup_gpio_A()
+{
+    PORTB |= (1 << PB5);  // Set output latch HIGH first
+    DDRB |= (1 << DDB5);  // Configure PB5 as output
+}
+
+void setup_gpio_B()
+{
+    DDRB &= ~(1 << DDB4); // Configure PB4 as input
+    PORTB &= ~(1 << PB4); // Disable internal pull-up
+}
+
 int main(void) 
 {
-    setup_gpio();
+    setup_gpio_A();
+    uint8_t data = 7;
+    send_frame(frame(data));
     return 0;
 }
