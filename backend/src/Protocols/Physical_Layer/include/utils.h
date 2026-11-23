@@ -14,7 +14,7 @@ void UART_transmit_char(char data);
 
 void UART_print(const char *str);
 
-void UART_print_number(uint8_t number);
+void UART_print_number(uint32_t number, uint8_t base);
 
 void UART_newline(void);
 

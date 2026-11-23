@@ -52,15 +52,32 @@ void UART_print_big_number(uint16_t number)
     }
 }
 
-void UART_print_number(uint8_t number)
+void UART_print_number(uint32_t number, uint8_t base)
 {
-    if (number >= 100)
-        UART_transmit_char('0' + number / 100);
+    if (base < 2 || base > 16)
+        return;
 
-    if (number >= 10)
-        UART_transmit_char('0' + (number / 10) % 10);
+    char buffer[32];
+    uint8_t i = 0;
 
-    UART_transmit_char('0' + number % 10);
+    const char digits[] = "0123456789ABCDEF";
+
+    if (number == 0)
+    {
+        UART_transmit_char('0');
+        return;
+    }
+
+    while (number > 0)
+    {
+        buffer[i++] = digits[number % base];
+        number /= base;
+    }
+
+    while (i > 0)
+    {
+        UART_transmit_char(buffer[--i]);
+    }
 }
 
 void UART_newline(void)
