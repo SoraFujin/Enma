@@ -1,10 +1,10 @@
-#include <stdio.h>
+// #include <stdio.h>
 #include <stdint.h>
-#include <stdlib.h>
-#include <string.h>
+// #include <stdlib.h>
+// #include <string.h>
 #include <unistd.h>
 #include <arpa/inet.h>
-#include "include/protocol.h"
+// #include "./include/Protocol.h"
 
 /* 
  * Main code that handles the data sent and recieved and the connections established 
